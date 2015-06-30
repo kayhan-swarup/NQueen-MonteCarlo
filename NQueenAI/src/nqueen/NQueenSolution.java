@@ -50,11 +50,19 @@ public class NQueenSolution extends JFrame{
 		}
 		return quality;
 	}
+	
+//	public static int getQuality(int [] solution){
+//		
+//		for(int i=0;i<solution.length;i++){
+//			
+//		}
+//	}
+	
 	public static int[] performSingleFlip(int[] solution){
 		int row = new Random().nextInt(n);
 		int column = new Random().nextInt(n);
 		solution[row] = column;
-		moveQueens(solution);
+//		moveQueens(solution);
 		return solution;
 	}
 	
@@ -70,20 +78,22 @@ public class NQueenSolution extends JFrame{
 		bestQuality = getQuality();
 		bestSolution = solution;
 		
-		double E = .0001; double alpha = .9;
-		double T = 1000;
+		double E = .0001; double alpha = .99;
+		double T = 10000;
 		while(T>E){
 			int[] solution1 = performSingleFlip(solution);
+			if(queen[0].isOK()&&queen[1].isOK()&&queen[2].isOK()&&queen[3].isOK()){
+				return solution;
+			}
 			int quality1 = getQuality();
 			if(quality1<bestQuality){
 				bestQuality = quality1;
 				bestSolution = solution1;
+				moveQueens(solution1);
 			}else{
 				moveQueens(bestSolution);
 			}
-			if(queen[0].isOK()&&queen[1].isOK()&&queen[2].isOK()&&queen[3].isOK()){
-				return solution;
-			}
+			
 			T=alpha*T;
 		}
 		
@@ -103,7 +113,7 @@ public class NQueenSolution extends JFrame{
 				chessBoard.moveQueen(queen[i],solution[i]);
 				try {
 					chessBoard.repaint();
-					Thread.sleep(20);
+					Thread.sleep(5);
 					
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -142,6 +152,7 @@ public class NQueenSolution extends JFrame{
 //		System.out.println(queen[2].isOK());
 //		MonteCarlo(500);
 		System.out.println(simulatedAnneling());
+		
 
 	}
 
