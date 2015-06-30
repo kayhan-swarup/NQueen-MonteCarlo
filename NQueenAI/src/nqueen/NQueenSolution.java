@@ -30,6 +30,68 @@ public class NQueenSolution extends JFrame{
 		}
 		return x;
 	}
+
+	public static void moveQueens(int[] solution){
+		for(int i=0;i<n;i++){
+			chessBoard.moveQueen(queen[i], solution[i]);
+			try{
+				chessBoard.repaint();
+				Thread.sleep(5);
+			}catch(InterruptedException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	public static int getQuality(){
+		int quality = 0;
+		for(int i=0;i<queen.length;i++){
+			if(!queen[i].isOK())
+				quality++;
+		}
+		return quality;
+	}
+	public static int[] performSingleFlip(int[] solution){
+		int row = new Random().nextInt(n);
+		int column = new Random().nextInt(n);
+		solution[row] = column;
+		moveQueens(solution);
+		return solution;
+	}
+	
+	public static int[] simulatedAnneling(){
+		int quality,bestQuality;
+		int[] bestSolution = null;
+		int[] solution = generateRandom();
+		moveQueens(solution);
+		if(queen[0].isOK()&&queen[1].isOK()&&queen[2].isOK()&&queen[3].isOK()){
+			return solution;
+		}
+		quality = getQuality();
+		bestQuality = getQuality();
+		bestSolution = solution;
+		
+		double E = .0001; double alpha = .9;
+		double T = 1000;
+		while(T>E){
+			int[] solution1 = performSingleFlip(solution);
+			int quality1 = getQuality();
+			if(quality1<bestQuality){
+				bestQuality = quality1;
+				bestSolution = solution1;
+			}else{
+				moveQueens(bestSolution);
+			}
+			if(queen[0].isOK()&&queen[1].isOK()&&queen[2].isOK()&&queen[3].isOK()){
+				return solution;
+			}
+			T=alpha*T;
+		}
+		
+		
+		
+		return bestSolution;
+		
+	}
 	
 	
 	
@@ -78,7 +140,8 @@ public class NQueenSolution extends JFrame{
 		
 //		chessBoard.moveQueen(queen[1], 1);
 //		System.out.println(queen[2].isOK());
-		MonteCarlo(500);
+//		MonteCarlo(500);
+		System.out.println(simulatedAnneling());
 
 	}
 
